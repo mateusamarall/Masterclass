@@ -3,6 +3,7 @@ module.exports = {
   async index(req, res, next) {
     try {
       const { user_id, page = 1 } = req.query;
+
       const query = knex("projects")
         .limit(5)
         .offset((page - 1) * 5);
@@ -13,7 +14,8 @@ module.exports = {
         query
           .where({ user_id })
           .join("users", "user_id", "=", "projects.user_id")
-          .select("projects.*", "users.username");
+          .select("projects.*", "users.username")
+          .where("users.deleted_at", null);
 
         countObj.where({ user_id });
       }
